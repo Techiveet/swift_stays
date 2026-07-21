@@ -32,6 +32,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      HAS_PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS != '' }}
 
     steps:
       - name: Checkout Code
@@ -106,7 +108,7 @@ jobs:
           retention-days: 5
 
       - name: Upload to Play Store
-        if: ${{ secrets.PLAY_STORE_CREDENTIALS != '' }}
+        if: ${{ env.HAS_PLAY_STORE_CREDENTIALS == 'true' }}
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_CREDENTIALS }}
@@ -116,5 +118,5 @@ jobs:
           status: ${{ github.event_name == 'workflow_dispatch' && inputs.release_status || 'completed' }}
 
       - name: Explain skipped Play upload
-        if: ${{ secrets.PLAY_STORE_CREDENTIALS == '' }}
+        if: ${{ env.HAS_PLAY_STORE_CREDENTIALS != 'true' }}
         run: echo "Signed AAB built successfully. Add PLAY_STORE_CREDENTIALS to enable automatic Play upload."
