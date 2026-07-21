@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "912555486594",
+    "project_id": "dejen-7d966",
+    "storage_bucket": "dejen-7d966.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912555486594:android:13dae50b6696d7fdc6739b",
+        "android_client_info": {
+          "package_name": "com.cybercoreet.dejen_stays.host"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdkqSFJ5W4Mo1BAndnYoqm02WFljrzeXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912555486594:android:3d2e3313909236c9c6739b",
+        "android_client_info": {
+          "package_name": "com.techive.Hivedriver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdkqSFJ5W4Mo1BAndnYoqm02WFljrzeXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912555486594:android:f08240601762cea4c6739b",
+        "android_client_info": {
+          "package_name": "com.techive.Hiveuser"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdkqSFJ5W4Mo1BAndnYoqm02WFljrzeXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912555486594:android:11e53c97f1bc482cc6739b",
+        "android_client_info": {
+          "package_name": "com.techive.hive_restaurant"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdkqSFJ5W4Mo1BAndnYoqm02WFljrzeXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912555486594:android:a2eb5a683aa1b26bc6739b",
+        "android_client_info": {
+          "package_name": "com.techiveet.dejen_market_merchant"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdkqSFJ5W4Mo1BAndnYoqm02WFljrzeXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
