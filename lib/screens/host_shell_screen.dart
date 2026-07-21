@@ -5,6 +5,10 @@ import 'package:intl/intl.dart';
 import '../core/theme.dart';
 import '../data/controllers/host_controller.dart';
 import 'host_login_screen.dart';
+import 'booking_detail_screen.dart';
+import 'host_profile_screen.dart';
+import 'property_detail_screen.dart';
+import 'property_form_screen.dart';
 
 class HostShellScreen extends StatefulWidget {
   const HostShellScreen({super.key});
@@ -103,8 +107,13 @@ class _Overview extends StatelessWidget {
     final arrivals = controller.bookings
         .where((b) => '${b['status']}' == 'confirmed')
         .length;
+    final profileStatus = '${controller.profile['status'] ?? 'pending'}';
     return _List(
       children: [
+        if (profileStatus != 'approved') ...[
+          _ApprovalBanner(controller: controller, status: profileStatus),
+          const SizedBox(height: 16),
+        ],
         Container(
           color: AppColors.ink,
           padding: const EdgeInsets.all(20),
@@ -120,7 +129,7 @@ class _Overview extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${controller.properties.length} active listings',
+                      '${controller.properties.length} ${controller.properties.length == 1 ? 'listing' : 'listings'}',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24,
@@ -163,9 +172,19 @@ class _Overview extends StatelessWidget {
         const SizedBox(height: 20),
         Text('Portfolio health', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 10),
-        ...controller.properties
-            .take(4)
-            .map((p) => _PropertyCard(property: p, controller: controller)),
+        if (controller.properties.isEmpty)
+          _Empty(
+            icon: Icons.add_home_work_outlined,
+            text: profileStatus == 'approved'
+                ? 'Add your first property to begin hosting.'
+                : 'Create your first draft while Dejen reviews your account.',
+            action: () => Get.to<void>(() => const PropertyFormScreen()),
+            actionLabel: 'Add property',
+          )
+        else
+          ...controller.properties
+              .take(4)
+              .map((p) => _PropertyCard(property: p, controller: controller)),
       ],
     );
   }
@@ -186,10 +205,7 @@ class _Properties extends StatelessWidget {
             ),
           ),
           FilledButton.icon(
-            onPressed: () => _message(
-              'Property creation',
-              'The guided listing form is available from the web dashboard while mobile editing is being verified.',
-            ),
+            onPressed: () => Get.to<void>(() => const PropertyFormScreen()),
             icon: const Icon(Icons.add_home_work),
             label: const Text('Add'),
           ),
@@ -197,7 +213,14 @@ class _Properties extends StatelessWidget {
       ),
       const SizedBox(height: 12),
       if (controller.properties.isEmpty)
-        const _Empty(icon: Icons.home_work_outlined, text: 'No properties yet.')
+        _Empty(
+          icon: Icons.home_work_outlined,
+          text: controller.profile['status'] == 'approved'
+              ? 'No properties yet.'
+              : 'Create a draft now. Publishing unlocks after approval.',
+          action: () => Get.to<void>(() => const PropertyFormScreen()),
+          actionLabel: 'Add property',
+        )
       else
         ...controller.properties.map(
           (p) => _PropertyCard(property: p, controller: controller),
@@ -276,6 +299,21 @@ class _Earnings extends StatelessWidget {
           ),
         ),
       ),
+      if (controller.payouts.isNotEmpty) ...[
+        const SizedBox(height: 18),
+        Text('Payout history', style: Theme.of(context).textTheme.titleLarge),
+        const SizedBox(height: 8),
+        ...controller.payouts.map(
+          (payout) => Card(
+            child: ListTile(
+              leading: const Icon(Icons.account_balance_outlined),
+              title: Text('ETB ${_money(payout['net_amount'])}'),
+              subtitle: Text('${payout['created_at'] ?? ''}'),
+              trailing: _Status('${payout['status'] ?? 'pending'}'),
+            ),
+          ),
+        ),
+      ],
     ],
   );
 }
@@ -290,7 +328,7 @@ class _Account extends StatelessWidget {
         child: ListTile(
           leading: const CircleAvatar(child: Icon(Icons.person)),
           title: Text(
-            '${controller.profile['display_name'] ?? 'Dejen Stays Host'}',
+            '${controller.user['display_name'] ?? 'Dejen Stays Host'}',
           ),
           subtitle: Text(
             'Verification: ${controller.profile['status'] ?? 'not started'}',
@@ -304,16 +342,24 @@ class _Account extends StatelessWidget {
               leading: const Icon(Icons.verified_user_outlined),
               title: const Text('Host verification'),
               subtitle: Text(
-                controller.profile['identity_verified_at'] == null
+                controller.profile['identity_verified'] != true
                     ? 'Identity review required'
                     : 'Verified',
               ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Get.to<void>(() => const HostProfileScreen()),
             ),
             const Divider(height: 1),
-            const ListTile(
-              leading: Icon(Icons.account_balance_outlined),
-              title: Text('Payout account'),
-              subtitle: Text('Encrypted and managed securely'),
+            ListTile(
+              leading: const Icon(Icons.account_balance_outlined),
+              title: const Text('Payout account'),
+              subtitle: Text(
+                controller.profile['payout_configured'] == true
+                    ? 'Configured securely'
+                    : 'Setup required',
+              ),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Get.to<void>(() => const HostProfileScreen()),
             ),
             const Divider(height: 1),
             const ListTile(
@@ -347,47 +393,76 @@ class _PropertyCard extends StatelessWidget {
     final address = property['address'] is Map
         ? Map<String, dynamic>.from(property['address'])
         : <String, dynamic>{};
+    final cover = '${property['cover_image'] ?? ''}';
+    final price = _map(property['price_from']);
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    '${property['title'] ?? 'Untitled home'}',
-                    style: Theme.of(context).textTheme.titleMedium,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () =>
+            Get.to<void>(() => PropertyDetailScreen(property: property)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (cover.isNotEmpty) ...[
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Image.network(
+                    cover,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => const ColoredBox(
+                      color: AppColors.border,
+                      child: Icon(Icons.broken_image_outlined),
+                    ),
                   ),
                 ),
-                _Status(status),
+                const SizedBox(height: 12),
               ],
-            ),
-            const SizedBox(height: 6),
-            Text(
-              '${address['neighborhood'] ?? ''}${address['city'] == null ? '' : ', ${address['city']}'}',
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                const Icon(Icons.bed_outlined, size: 20),
-                const SizedBox(width: 6),
-                Text('${property['bedrooms'] ?? 0} beds'),
-                const Spacer(),
-                Text(
-                  'ETB ${_money(property['base_nightly_rate'])}/night',
-                  style: const TextStyle(fontWeight: FontWeight.w800),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${property['title'] ?? 'Untitled home'}',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                  _Status(status),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Text(
+                '${address['neighborhood'] ?? ''}${address['city'] == null ? '' : ', ${address['city']}'}',
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  const Icon(Icons.bed_outlined, size: 20),
+                  const SizedBox(width: 6),
+                  Text('${property['bedrooms'] ?? 0} beds'),
+                  const Spacer(),
+                  Text(
+                    '${price['currency'] ?? 'ETB'} ${_money(price['amount'])}/night',
+                    style: const TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              OutlinedButton.icon(
+                onPressed: () => _blockDates(context),
+                icon: const Icon(Icons.event_busy),
+                label: const Text('Block dates'),
+              ),
+              const SizedBox(height: 8),
+              TextButton.icon(
+                onPressed: () => Get.to<void>(
+                  () => PropertyDetailScreen(property: property),
                 ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            OutlinedButton.icon(
-              onPressed: () => _blockDates(context),
-              icon: const Icon(Icons.event_busy),
-              label: const Text('Block dates'),
-            ),
-          ],
+                icon: const Icon(Icons.settings_outlined),
+                label: const Text('Manage listing'),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -426,110 +501,121 @@ class _BookingCard extends StatelessWidget {
     final verification = booking['identity_verification'] is Map
         ? Map<String, dynamic>.from(booking['identity_verification'])
         : <String, dynamic>{};
+    final guest = _map(booking['guest']);
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    '${property['title'] ?? 'Stay booking'}',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ),
-                _Status(status),
-              ],
-            ),
-            Text('${booking['reference'] ?? ''}'),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                const Icon(Icons.date_range, size: 19),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    '${booking['check_in'] ?? ''} to ${booking['check_out'] ?? ''}',
-                  ),
-                ),
-                Text(
-                  'ETB ${_money(booking['total'])}',
-                  style: const TextStyle(fontWeight: FontWeight.w800),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Icon(
-                  verification['status'] == 'verified'
-                      ? Icons.verified_user
-                      : Icons.hourglass_top,
-                  size: 19,
-                  color: verification['status'] == 'verified'
-                      ? AppColors.success
-                      : AppColors.warning,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  'Guest documents: ${verification['status'] ?? 'not submitted'}',
-                ),
-              ],
-            ),
-            if (status == 'pending_host') ...[
-              const SizedBox(height: 12),
+      child: InkWell(
+        onTap: () => Get.to<void>(() => BookingDetailScreen(booking: booking)),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton(
-                      onPressed: () =>
-                          _act('decline', reason: 'Unable to host these dates'),
-                      child: const Text('Decline'),
+                    child: Text(
+                      '${property['title'] ?? 'Stay booking'}',
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  _Status(status),
+                ],
+              ),
+              Text('${booking['reference'] ?? ''}'),
+              if ('${guest['name'] ?? ''}'.isNotEmpty)
+                Text(
+                  '${guest['name']}',
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Icon(Icons.date_range, size: 19),
+                  const SizedBox(width: 6),
                   Expanded(
-                    child: FilledButton(
-                      onPressed: () => _act('approve'),
-                      child: const Text('Approve'),
+                    child: Text(
+                      '${booking['check_in'] ?? ''} to ${booking['check_out'] ?? ''}',
                     ),
+                  ),
+                  Text(
+                    'ETB ${_money(booking['total'])}',
+                    style: const TextStyle(fontWeight: FontWeight.w800),
                   ),
                 ],
               ),
-            ],
-            if (status == 'confirmed') ...[
-              const SizedBox(height: 12),
-              FilledButton.icon(
-                onPressed: verification['status'] == 'verified'
-                    ? () => _act('check-in')
-                    : null,
-                icon: const Icon(Icons.login),
-                label: Text(
-                  verification['status'] == 'verified'
-                      ? 'Check in guest'
-                      : 'Await ID approval',
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Icon(
+                    verification['status'] == 'verified'
+                        ? Icons.verified_user
+                        : Icons.hourglass_top,
+                    size: 19,
+                    color: verification['status'] == 'verified'
+                        ? AppColors.success
+                        : AppColors.warning,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Guest documents: ${verification['status'] ?? 'not submitted'}',
+                  ),
+                ],
+              ),
+              if (status == 'pending_host') ...[
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => _act(
+                          'decline',
+                          reason: 'Unable to host these dates',
+                        ),
+                        child: const Text('Decline'),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: () => _act('approve'),
+                        child: const Text('Approve'),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
+              ],
+              if (status == 'confirmed') ...[
+                const SizedBox(height: 12),
+                FilledButton.icon(
+                  onPressed: verification['status'] == 'verified'
+                      ? () => _act('check-in')
+                      : null,
+                  icon: const Icon(Icons.login),
+                  label: Text(
+                    verification['status'] == 'verified'
+                        ? 'Check in guest'
+                        : 'Await ID approval',
+                  ),
+                ),
+              ],
+              if (status == 'checked_in') ...[
+                const SizedBox(height: 12),
+                FilledButton.icon(
+                  onPressed: () => _act('check-out'),
+                  icon: const Icon(Icons.logout),
+                  label: const Text('Check out guest'),
+                ),
+              ],
+              if (status == 'checked_out') ...[
+                const SizedBox(height: 12),
+                FilledButton.icon(
+                  onPressed: () => _act('complete'),
+                  icon: const Icon(Icons.task_alt),
+                  label: const Text('Complete stay'),
+                ),
+              ],
             ],
-            if (status == 'checked_in') ...[
-              const SizedBox(height: 12),
-              FilledButton.icon(
-                onPressed: () => _act('check-out'),
-                icon: const Icon(Icons.logout),
-                label: const Text('Check out guest'),
-              ),
-            ],
-            if (status == 'checked_out') ...[
-              const SizedBox(height: 12),
-              FilledButton.icon(
-                onPressed: () => _act('complete'),
-                icon: const Icon(Icons.task_alt),
-                label: const Text('Complete stay'),
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );
@@ -557,9 +643,16 @@ class _List extends StatelessWidget {
 }
 
 class _Empty extends StatelessWidget {
-  const _Empty({required this.icon, required this.text});
+  const _Empty({
+    required this.icon,
+    required this.text,
+    this.action,
+    this.actionLabel,
+  });
   final IconData icon;
   final String text;
+  final VoidCallback? action;
+  final String? actionLabel;
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.all(28),
@@ -568,6 +661,14 @@ class _Empty extends StatelessWidget {
         Icon(icon, size: 42, color: AppColors.muted),
         const SizedBox(height: 8),
         Text(text),
+        if (action != null) ...[
+          const SizedBox(height: 14),
+          FilledButton.icon(
+            onPressed: action,
+            icon: const Icon(Icons.arrow_forward),
+            label: Text(actionLabel ?? 'Continue'),
+          ),
+        ],
       ],
     ),
   );
@@ -633,3 +734,61 @@ void _message(String title, String body) => Get.snackbar(
   snackPosition: SnackPosition.BOTTOM,
   margin: const EdgeInsets.all(12),
 );
+
+class _ApprovalBanner extends StatelessWidget {
+  const _ApprovalBanner({required this.controller, required this.status});
+  final HostController controller;
+  final String status;
+
+  @override
+  Widget build(BuildContext context) {
+    final rejected = status == 'rejected';
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: rejected ? const Color(0xFFFFE8E8) : const Color(0xFFFFF4D6),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: rejected ? AppColors.danger : AppColors.warning,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                rejected ? Icons.error_outline : Icons.hourglass_top,
+                color: rejected ? AppColors.danger : AppColors.warning,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  rejected
+                      ? 'Host review needs attention'
+                      : 'Host approval is in progress',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            rejected
+                ? '${controller.profile['rejection_reason'] ?? 'Update your host information and contact support.'}'
+                : 'Complete your bio and payout setup now. You can add properties as soon as the Dejen team approves your account.',
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton.icon(
+            onPressed: () => Get.to<void>(() => const HostProfileScreen()),
+            icon: const Icon(Icons.assignment_ind_outlined),
+            label: const Text('Complete host profile'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Map<String, dynamic> _map(dynamic value) =>
+    value is Map ? Map<String, dynamic>.from(value) : {};

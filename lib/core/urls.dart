@@ -11,6 +11,9 @@ class Urls {
   static const String hostProperties = 'stays/host/properties';
   static const String hostBookings = 'stays/host/bookings';
   static const String hostEarnings = 'stays/host/earnings';
+  static const String staysConfiguration = 'stays/configuration';
+  static const String searchAddress = 'search-address-by-location-name';
+  static const String placeDetails = 'get-place-details';
   static const String register = 'restaurant/register';
   static const String orders = 'restaurant/orders';
   static const String orderDetails = 'restaurant/orders/details/'; // + {id}

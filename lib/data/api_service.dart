@@ -89,10 +89,15 @@ class ApiService {
     );
   }
 
-  Future<ApiResult> get(String path, {bool auth = true}) async {
+  Future<ApiResult> get(
+    String path, {
+    bool auth = true,
+    Map<String, dynamic>? query,
+  }) async {
     return _wrap(
       () => _dio.get(
         '${Urls.baseUrl}$path',
+        queryParameters: query,
         options: auth ? _authOptions() : null,
       ),
     );

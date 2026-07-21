@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../core/storage.dart';
 import '../../core/urls.dart';
@@ -17,6 +19,9 @@ class HostController extends GetxController {
   final properties = <Map<String, dynamic>>[].obs;
   final bookings = <Map<String, dynamic>>[].obs;
   final earnings = <String, dynamic>{}.obs;
+  final payouts = <Map<String, dynamic>>[].obs;
+  final configuration = <String, dynamic>{}.obs;
+  final user = <String, dynamic>{}.obs;
   final lastUpdated = Rxn<DateTime>();
   Timer? _poller;
   late final HostRealtimeService realtime = HostRealtimeService(
@@ -97,9 +102,11 @@ class HostController extends GetxController {
         api.get(Urls.hostProperties),
         api.get(Urls.hostBookings),
         api.get(Urls.hostEarnings),
+        api.get(Urls.staysConfiguration, auth: false),
       ]);
       if (results[0].success) {
         profile.assignAll(_map(results[0].data['profile']));
+        user.assignAll(_map(results[0].data['user']));
         final userId = int.tryParse('${results[0].data['user_id'] ?? 0}') ?? 0;
         await realtime.connect(
           userId: userId,
@@ -114,6 +121,10 @@ class HostController extends GetxController {
       }
       if (results[3].success) {
         earnings.assignAll(_map(results[3].data['summary']));
+        payouts.assignAll(_list(results[3].data['payouts']));
+      }
+      if (results[4].success) {
+        configuration.assignAll(results[4].data);
       }
       lastUpdated.value = DateTime.now();
     } finally {
@@ -130,6 +141,7 @@ class HostController extends GetxController {
     final result = await api.post(
       '${Urls.hostBookings}/$reference/$action',
       reason == null ? {} : {'reason': reason, 'response': reason},
+      auth: true,
     );
     if (!result.success) {
       return result.firstMessage.isEmpty
@@ -149,7 +161,8 @@ class HostController extends GetxController {
     final reference = '${property['reference'] ?? property['id']}';
     final result = await api.post(
       '${Urls.hostProperties}/$reference/blocked-dates',
-      {'start_date': _date(start), 'end_date': _date(end), 'reason': reason},
+      {'starts_on': _date(start), 'ends_on': _date(end), 'reason': reason},
+      auth: true,
     );
     if (!result.success) {
       return result.firstMessage.isEmpty
@@ -158,6 +171,204 @@ class HostController extends GetxController {
     }
     await refreshAll();
     return null;
+  }
+
+  Future<String?> saveProfile({
+    required String bio,
+    required List<String> languages,
+    String? payoutProvider,
+    String? payoutAccount,
+  }) async {
+    busy.value = true;
+    try {
+      final result = await api.put(Urls.hostProfile, {
+        'bio': bio.trim(),
+        'languages': languages,
+        if (payoutAccount != null &&
+            payoutAccount.trim().isNotEmpty &&
+            payoutProvider != null &&
+            payoutProvider.isNotEmpty)
+          'payout_provider': payoutProvider,
+        if (payoutAccount != null && payoutAccount.trim().isNotEmpty)
+          'payout_account': payoutAccount.trim(),
+      });
+      if (!result.success) return _error(result, 'Could not save profile.');
+      profile.assignAll(_map(result.data['profile']));
+      return null;
+    } finally {
+      busy.value = false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> propertyDetails(
+    Map<String, dynamic> property,
+  ) async {
+    final reference = '${property['reference'] ?? property['id']}';
+    final result = await api.get('${Urls.hostProperties}/$reference');
+    if (!result.success) return null;
+    final details = _map(result.data['property']);
+    details['documents'] = result.data['documents'];
+    return details;
+  }
+
+  Future<({String? error, Map<String, dynamic>? property})> saveProperty(
+    Map<String, dynamic> payload, {
+    String? reference,
+  }) async {
+    busy.value = true;
+    try {
+      final result = reference == null
+          ? await api.post(Urls.hostProperties, payload, auth: true)
+          : await api.put('${Urls.hostProperties}/$reference', payload);
+      if (!result.success) {
+        return (
+          error: _error(result, 'Could not save property.'),
+          property: null,
+        );
+      }
+      await refreshAll();
+      return (error: null, property: _map(result.data['property']));
+    } finally {
+      busy.value = false;
+    }
+  }
+
+  Future<String?> submitProperty(Map<String, dynamic> property) async {
+    final reference = '${property['reference'] ?? property['id']}';
+    final result = await api.post(
+      '${Urls.hostProperties}/$reference/submit',
+      {},
+      auth: true,
+    );
+    if (!result.success) return _error(result, 'Could not submit property.');
+    await refreshAll();
+    return null;
+  }
+
+  Future<String?> uploadPropertyPhoto(
+    Map<String, dynamic> property,
+    XFile file,
+    String altText,
+  ) async {
+    final reference = '${property['reference'] ?? property['id']}';
+    final form = dio.FormData.fromMap({
+      'file': await dio.MultipartFile.fromFile(file.path, filename: file.name),
+      'alt_text': altText,
+    });
+    final result = await api.postMultipart(
+      '${Urls.hostProperties}/$reference/media',
+      form,
+    );
+    return result.success ? null : _error(result, 'Could not upload photo.');
+  }
+
+  Future<String?> uploadPropertyDocument(
+    Map<String, dynamic> property,
+    XFile file,
+    String type,
+  ) async {
+    final reference = '${property['reference'] ?? property['id']}';
+    final form = dio.FormData.fromMap({
+      'file': await dio.MultipartFile.fromFile(file.path, filename: file.name),
+      'type': type,
+    });
+    final result = await api.postMultipart(
+      '${Urls.hostProperties}/$reference/documents',
+      form,
+    );
+    return result.success ? null : _error(result, 'Could not upload document.');
+  }
+
+  Future<String?> deletePropertyPhoto(int mediaId) async {
+    final result = await api.delete('stays/host/media/$mediaId');
+    return result.success ? null : _error(result, 'Could not delete photo.');
+  }
+
+  Future<String?> setCoverPhoto(
+    Map<String, dynamic> property,
+    List<Map<String, dynamic>> media,
+    int coverId,
+  ) async {
+    final reference = '${property['reference'] ?? property['id']}';
+    final result = await api.put(
+      '${Urls.hostProperties}/$reference/media/order',
+      {
+        'media': [
+          for (var index = 0; index < media.length; index++)
+            {'id': media[index]['id'], 'sort_order': index * 10},
+        ],
+        'cover_id': coverId,
+      },
+    );
+    return result.success
+        ? null
+        : _error(result, 'Could not update cover photo.');
+  }
+
+  Future<String?> saveUnit(
+    Map<String, dynamic> property,
+    Map<String, dynamic> payload, {
+    int? unitId,
+  }) async {
+    final reference = '${property['reference'] ?? property['id']}';
+    final suffix = unitId == null ? '' : '/$unitId';
+    final result = await api.post(
+      '${Urls.hostProperties}/$reference/units$suffix',
+      payload,
+      auth: true,
+    );
+    return result.success ? null : _error(result, 'Could not save unit.');
+  }
+
+  Future<String?> savePriceRule(
+    Map<String, dynamic> property,
+    Map<String, dynamic> payload,
+  ) async {
+    final reference = '${property['reference'] ?? property['id']}';
+    final result = await api.post(
+      '${Urls.hostProperties}/$reference/price-rules',
+      payload,
+      auth: true,
+    );
+    return result.success
+        ? null
+        : _error(result, 'Could not save seasonal price.');
+  }
+
+  Future<String?> saveAvailabilityRule(
+    Map<String, dynamic> property,
+    Map<String, dynamic> payload,
+  ) async {
+    final reference = '${property['reference'] ?? property['id']}';
+    final result = await api.post(
+      '${Urls.hostProperties}/$reference/availability-rules',
+      payload,
+      auth: true,
+    );
+    return result.success
+        ? null
+        : _error(result, 'Could not save availability rule.');
+  }
+
+  Future<List<Map<String, dynamic>>> searchAddresses(String query) async {
+    if (query.trim().length < 3) return [];
+    final result = await api.get(
+      Urls.searchAddress,
+      query: {'input': query.trim(), 'country_code': 'ET'},
+    );
+    final raw = _map(result.body);
+    final predictions = raw['predictions'];
+    return _list(predictions);
+  }
+
+  Future<Map<String, dynamic>?> placeDetails(String placeId) async {
+    final result = await api.get(
+      Urls.placeDetails,
+      query: {'place_id': placeId},
+    );
+    final raw = _map(result.body);
+    final details = _map(raw['result']);
+    return details.isEmpty ? null : details;
   }
 
   void startRealtimeFallback() {
@@ -173,6 +384,9 @@ class HostController extends GetxController {
     properties.clear();
     bookings.clear();
     earnings.clear();
+    payouts.clear();
+    configuration.clear();
+    user.clear();
   }
 
   @override
@@ -195,4 +409,7 @@ class HostController extends GetxController {
 
   static String _date(DateTime value) =>
       '${value.year.toString().padLeft(4, '0')}-${value.month.toString().padLeft(2, '0')}-${value.day.toString().padLeft(2, '0')}';
+
+  static String _error(ApiResult result, String fallback) =>
+      result.firstMessage.isEmpty ? fallback : result.firstMessage;
 }
