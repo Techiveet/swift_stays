@@ -1,4 +1,4 @@
-name: Build Restaurant App
+name: Build Stays Host App
 
 on:
   push:
@@ -44,5 +44,5 @@ jobs:
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: restaurant-release-apk
+          name: stays-host-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
