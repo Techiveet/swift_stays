@@ -1,0 +1,48 @@
+name: Build Restaurant App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Accept licenses & install NDK 28
+        run: |
+          SDKMGR=$(ls "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -n1)
+          [ -z "$SDKMGR" ] && SDKMGR=$(command -v sdkmanager)
+          echo "Using sdkmanager: $SDKMGR"
+          yes | "$SDKMGR" --licenses
+          "$SDKMGR" "ndk;28.2.13676358" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Build APK
+        run: flutter build apk --release --dart-define=RIDE_API_URL=https://dejen.techiveet.com
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: restaurant-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk

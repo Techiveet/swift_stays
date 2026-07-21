@@ -1,0 +1,116 @@
+name: Deploy Restaurant App to Play Store
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/workflows/play-store.yml'
+  workflow_dispatch:
+    inputs:
+      track:
+        description: Google Play release track
+        required: true
+        default: internal
+        type: choice
+        options:
+          - internal
+          - production
+      release_status:
+        description: Use draft while the Play app itself is still in draft
+        required: true
+        default: completed
+        type: choice
+        options:
+          - completed
+          - draft
+
+concurrency:
+  group: restaurant-play-store
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Validate deployment secrets
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          PLAY_STORE_CREDENTIALS: ${{ secrets.PLAY_STORE_CREDENTIALS }}
+        run: |
+          for secret in KEYSTORE_BASE64 KEY_ALIAS KEY_PASSWORD STORE_PASSWORD PLAY_STORE_CREDENTIALS; do
+            [ -n "${!secret}" ] || { echo "Missing GitHub secret: $secret"; exit 1; }
+          done
+
+      - name: Decode Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode --ignore-garbage > android/upload-keystore.jks
+
+      - name: Create key.properties
+        env:
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+        run: |
+          echo "storePassword=$STORE_PASSWORD" > android/key.properties
+          echo "keyPassword=$KEY_PASSWORD" >> android/key.properties
+          echo "keyAlias=$KEY_ALIAS" >> android/key.properties
+          echo "storeFile=upload-keystore.jks" >> android/key.properties
+
+      - name: Accept licenses & install NDK 28
+        run: |
+          SDKMGR=$(ls "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -n1)
+          [ -z "$SDKMGR" ] && SDKMGR=$(command -v sdkmanager)
+          echo "Using sdkmanager: $SDKMGR"
+          yes | "$SDKMGR" --licenses
+          "$SDKMGR" "ndk;28.2.13676358" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Compute version code
+        # Minutes since a fixed epoch (2024-01-01 UTC) — strictly increases on every
+        # build forever (CI or local), so Play can never reject it as "already used"
+        # and there's no manual counter/offset to maintain or run out of.
+        id: vc
+        run: echo "code=$(( ($(date -u +%s) - 1704067200) / 60 ))" >> "$GITHUB_OUTPUT"
+
+      - name: Build App Bundle
+        run: flutter build appbundle --release --build-number=${{ steps.vc.outputs.code }} --dart-define=RIDE_API_URL=https://dejen.techiveet.com
+
+      - name: Upload Artifact for Manual Play Store Deployment
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/app/outputs/bundle/release/app-release.aab
+          retention-days: 5
+
+      - name: Upload to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_CREDENTIALS }}
+          packageName: com.techive.hive_restaurant
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          track: ${{ github.event_name == 'workflow_dispatch' && inputs.track || 'internal' }}
+          status: ${{ github.event_name == 'workflow_dispatch' && inputs.release_status || 'completed' }}

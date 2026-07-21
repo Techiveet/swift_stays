@@ -1,0 +1,40 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+
+    - name: Install dependencies
+      run: flutter pub get
+
+    - name: Analyze code
+      # Style infos (e.g. prefer_const_constructors) are non-blocking suggestions.
+      run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+    - name: Run tests
+      run: |
+        if [ -d "test" ]; then
+          flutter test
+        else
+          echo "No 'test' directory found. Skipping tests."
+        fi

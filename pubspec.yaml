@@ -1,0 +1,72 @@
+name: dejen_stays_host
+description: "Dejen Stays host and property management app"
+publish_to: 'none'
+
+# Build number is the strictly-increasing minutes-since-2024-01-01 value CI
+# computes; kept high here as the local-build fallback (see play-store.yml).
+version: 1.0.0+1319986
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # State management + routing
+  get: ^4.7.3
+
+  # Networking
+  dio: ^5.9.2
+  image_picker: ^1.2.1
+  url_launcher: ^6.3.2
+
+  # Local persistence (auth token, cached restaurant)
+  shared_preferences: ^2.5.5
+  flutter_secure_storage: ^10.2.0
+
+  # Formatting
+  intl: ^0.20.2
+
+  # Push notifications (optional at runtime — guarded so the app still runs
+  # without a Firebase config; see README "Enabling push").
+  firebase_core: ^4.8.0
+  firebase_messaging: ^16.2.1
+  flutter_local_notifications: ^22.0.0
+
+  # Realtime (Reverb speaks the Pusher protocol)
+  pusher_channels_flutter: ^2.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+  # Dejen launcher icon + native splash generators (see the two config yamls).
+  flutter_launcher_icons: ^0.14.1
+  flutter_native_splash: ^2.4.4
+
+# Vendored fork of pusher_channels_flutter that adds self-hosted host/port
+# support to init() — needed to reach our Reverb server (upstream 2.6.0 only
+# supports pusher.com clusters). Same fork the Rider/Driver apps vendor.
+dependency_overrides:
+  pusher_channels_flutter:
+    path: ./packages/pusher_channels_flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/branding/
+    - assets/branding/icon/
+    - assets/branding/splash/
+
+  fonts:
+    - family: Outfit
+      fonts:
+        - asset: assets/fonts/Outfit-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Outfit-Bold.ttf
+          weight: 700

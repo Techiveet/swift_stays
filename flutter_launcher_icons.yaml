@@ -1,0 +1,14 @@
+# Dejen app icons. Run:  dart run flutter_launcher_icons -f flutter_launcher_icons.yaml
+# (or paste this block under your pubspec.yaml and run: dart run flutter_launcher_icons)
+flutter_launcher_icons:
+  image_path: "assets/branding/icon/dejen_appicon.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  min_sdk_android: 21
+
+  adaptive_icon_background: "assets/branding/icon/dejen_appicon_background.png"
+  adaptive_icon_foreground: "assets/branding/icon/dejen_appicon_foreground.png"
+
+  # NOTE: this app only has android/ios platform folders, so web/windows/macos
+  # icon generation (present in the original kit) is intentionally omitted.
