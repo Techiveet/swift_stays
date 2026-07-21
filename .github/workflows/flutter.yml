@@ -39,7 +39,7 @@ jobs:
           "$SDKMGR" "ndk;28.2.13676358" "platforms;android-36" "build-tools;36.0.0"
 
       - name: Build APK
-        run: flutter build apk --release --dart-define=RIDE_API_URL=https://dejen.techiveet.com
+        run: flutter build apk --release --dart-define=RIDE_API_URL=${{ vars.RIDE_API_URL }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v4

@@ -98,7 +98,7 @@ jobs:
         run: echo "code=$(( ($(date -u +%s) - 1704067200) / 60 ))" >> "$GITHUB_OUTPUT"
 
       - name: Build App Bundle
-        run: flutter build appbundle --release --build-number=${{ steps.vc.outputs.code }} --dart-define=RIDE_API_URL=https://dejen.techiveet.com
+        run: flutter build appbundle --release --build-number=${{ steps.vc.outputs.code }} --dart-define=RIDE_API_URL=${{ vars.RIDE_API_URL }}
 
       - name: Upload Artifact for Manual Play Store Deployment
         uses: actions/upload-artifact@v4
