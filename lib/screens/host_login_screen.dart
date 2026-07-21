@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../core/theme.dart';
 import '../data/controllers/host_controller.dart';
+import 'register_screen.dart';
 import 'host_shell_screen.dart';
 
 class HostLoginScreen extends StatefulWidget {
@@ -128,6 +129,12 @@ class _HostLoginScreenState extends State<HostLoginScreen> {
                       icon: const Icon(Icons.login),
                       label: const Text('Sign in as host'),
                     ),
+                  ),
+                  const SizedBox(height: 14),
+                  OutlinedButton.icon(
+                    onPressed: () => Get.to<void>(() => const RegisterScreen()),
+                    icon: const Icon(Icons.person_add_alt_1_outlined),
+                    label: const Text('Create a host account'),
                   ),
                   const SizedBox(height: 14),
                   const Text(

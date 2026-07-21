@@ -6,6 +6,7 @@ class Urls {
   static const String baseUrl = '${Environment.domainUrl}/api/';
 
   static const String login = 'login';
+  static const String hostRegister = 'stays/host/register';
   static const String hostProfile = 'stays/host/profile';
   static const String hostProperties = 'stays/host/properties';
   static const String hostBookings = 'stays/host/bookings';

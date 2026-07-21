@@ -50,6 +50,45 @@ class HostController extends GetxController {
     }
   }
 
+  Future<String?> register({
+    required String firstName,
+    required String lastName,
+    required String username,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+    String? mobile,
+    String? bio,
+  }) async {
+    busy.value = true;
+    try {
+      final result = await api.post(Urls.hostRegister, {
+        'firstname': firstName.trim(),
+        'lastname': lastName.trim(),
+        'username': username.trim().toLowerCase(),
+        'email': email.trim().toLowerCase(),
+        'password': password,
+        'password_confirmation': passwordConfirmation,
+        if (mobile != null && mobile.trim().isNotEmpty) 'mobile': mobile.trim(),
+        if (bio != null && bio.trim().isNotEmpty) 'bio': bio.trim(),
+      });
+      if (!result.success) {
+        return result.firstMessage.isEmpty
+            ? 'Could not create your host account.'
+            : result.firstMessage;
+      }
+      await storage.saveToken(
+        '${result.data['access_token'] ?? ''}',
+        '${result.data['token_type'] ?? 'Bearer'}',
+      );
+      await refreshAll();
+      startRealtimeFallback();
+      return null;
+    } finally {
+      busy.value = false;
+    }
+  }
+
   Future<void> refreshAll() async {
     busy.value = true;
     try {

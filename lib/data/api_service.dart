@@ -28,10 +28,19 @@ class ApiResult {
   /// First message string from the backend envelope, if any.
   String get firstMessage {
     if (message != null && message!.isNotEmpty) return message!;
+    if (body is Map && body['message'] is String) {
+      return body['message'].toString();
+    }
     if (body is Map &&
         body['message'] is List &&
         (body['message'] as List).isNotEmpty) {
       return (body['message'] as List).first.toString();
+    }
+    if (body is Map && body['errors'] is Map) {
+      final errors = (body['errors'] as Map).values;
+      for (final value in errors) {
+        if (value is List && value.isNotEmpty) return value.first.toString();
+      }
     }
     return '';
   }
