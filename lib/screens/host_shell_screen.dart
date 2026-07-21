@@ -46,8 +46,14 @@ class _HostShellScreenState extends State<HostShellScreen> {
           ),
         ],
       ),
-      body: Obx(
-        () => RefreshIndicator(
+      body: Obx(() {
+        if (controller.busy.value && controller.user.isEmpty) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (controller.loadError.value.isNotEmpty && controller.user.isEmpty) {
+          return _HostLoadFailure(controller: controller);
+        }
+        final dashboard = RefreshIndicator(
           onRefresh: controller.refreshAll,
           child: IndexedStack(
             index: tab,
@@ -59,8 +65,24 @@ class _HostShellScreenState extends State<HostShellScreen> {
               _Account(controller: controller),
             ],
           ),
-        ),
-      ),
+        );
+        if (controller.loadError.value.isEmpty) return dashboard;
+        return Column(
+          children: [
+            MaterialBanner(
+              content: Text(controller.loadError.value),
+              leading: const Icon(Icons.cloud_off_outlined),
+              actions: [
+                TextButton(
+                  onPressed: controller.refreshAll,
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
+            Expanded(child: dashboard),
+          ],
+        );
+      }),
       bottomNavigationBar: NavigationBar(
         selectedIndex: tab,
         onDestinationSelected: (value) => setState(() => tab = value),
@@ -94,6 +116,49 @@ class _HostShellScreenState extends State<HostShellScreen> {
       ),
     );
   }
+}
+
+class _HostLoadFailure extends StatelessWidget {
+  const _HostLoadFailure({required this.controller});
+  final HostController controller;
+
+  @override
+  Widget build(BuildContext context) => Center(
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.all(28),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.cloud_off_outlined,
+            size: 58,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Host workspace unavailable',
+            style: Theme.of(context).textTheme.headlineSmall,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(controller.loadError.value, textAlign: TextAlign.center),
+          const SizedBox(height: 20),
+          FilledButton.icon(
+            onPressed: controller.refreshAll,
+            icon: const Icon(Icons.refresh),
+            label: const Text('Try again'),
+          ),
+          TextButton(
+            onPressed: () async {
+              await controller.logout();
+              Get.offAll<void>(() => const HostLoginScreen());
+            },
+            child: const Text('Sign out'),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class _Overview extends StatelessWidget {

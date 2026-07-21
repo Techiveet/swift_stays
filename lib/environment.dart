@@ -1,7 +1,7 @@
 /// App-wide configuration for the Dejen restaurant owner app.
 class Environment {
   static const String appName = 'Dejen Stays Host';
-  static const String version = '1.0.0';
+  static const String version = '1.1.1';
 
   /// Backend base host. Override at build time with:
   ///   flutter run --dart-define=RIDE_API_URL=https://your-host

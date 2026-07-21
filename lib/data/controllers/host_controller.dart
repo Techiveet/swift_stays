@@ -22,6 +22,7 @@ class HostController extends GetxController {
   final payouts = <Map<String, dynamic>>[].obs;
   final configuration = <String, dynamic>{}.obs;
   final user = <String, dynamic>{}.obs;
+  final loadError = ''.obs;
   final lastUpdated = Rxn<DateTime>();
   Timer? _poller;
   late final HostRealtimeService realtime = HostRealtimeService(
@@ -104,6 +105,7 @@ class HostController extends GetxController {
         api.get(Urls.hostEarnings),
         api.get(Urls.staysConfiguration, auth: false),
       ]);
+      var failure = '';
       if (results[0].success) {
         profile.assignAll(_map(results[0].data['profile']));
         user.assignAll(_map(results[0].data['user']));
@@ -112,20 +114,29 @@ class HostController extends GetxController {
           userId: userId,
           config: _map(results[0].data['realtime']),
         );
+      } else {
+        failure = _error(results[0], 'Could not load your host profile.');
       }
       if (results[1].success) {
         properties.assignAll(_list(results[1].data['properties']));
+      } else if (failure.isEmpty) {
+        failure = _error(results[1], 'Could not load your properties.');
       }
       if (results[2].success) {
         bookings.assignAll(_list(results[2].data['bookings']));
+      } else if (failure.isEmpty) {
+        failure = _error(results[2], 'Could not load your bookings.');
       }
       if (results[3].success) {
         earnings.assignAll(_map(results[3].data['summary']));
         payouts.assignAll(_list(results[3].data['payouts']));
+      } else if (failure.isEmpty) {
+        failure = _error(results[3], 'Could not load your earnings.');
       }
       if (results[4].success) {
         configuration.assignAll(results[4].data);
       }
+      loadError.value = failure;
       lastUpdated.value = DateTime.now();
     } finally {
       busy.value = false;
@@ -387,6 +398,7 @@ class HostController extends GetxController {
     payouts.clear();
     configuration.clear();
     user.clear();
+    loadError.value = '';
   }
 
   @override
