@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-labelledby="title desc">
-  <title id="title">Dejen symbol</title><desc id="desc">A green protection shield crossed by an upward route.</desc>
-  <defs><linearGradient id="dejenAurora" x1="24" y1="180" x2="178" y2="18" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0A6B3C"/><stop offset=".42" stop-color="#16B45A"/><stop offset=".72" stop-color="#22C96C"/><stop offset="1" stop-color="#5BE39A"/></linearGradient></defs>
-  <path d="M100 16C151 16 177 31 180 55c3 38-2 69-19 94-15 22-37 39-61 48-24-9-46-26-61-48C22 124 17 93 20 55c3-24 29-39 80-39Z" fill="url(#dejenAurora)"/>
-  <path d="M45 103c39-27 82-20 117-51" fill="none" stroke="#F6FAF6" stroke-width="12" stroke-linecap="round"/><path d="M57 127c34-17 68-12 96-35" fill="none" stroke="#F6FAF6" stroke-opacity=".46" stroke-width="5" stroke-linecap="round"/><circle cx="162" cy="52" r="7" fill="#F6FAF6"/><circle cx="162" cy="52" r="12" fill="none" stroke="#F6FAF6" stroke-opacity=".38" stroke-width="2.5"/>
-</svg>

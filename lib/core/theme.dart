@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
+import '../theme/swift_colors.dart';
+
+/// Thin alias layer over the shared Swift palette so the screens in this app
+/// keep reading `AppColors.x` while the brand lives in one place.
 class AppColors {
-  static const Color primary = Color(0xFF0F9D58);
-  static const Color primaryDark = Color(0xFF08783F);
-  static const Color ink = Color(0xFF0C1813);
-  static const Color scaffold = Color(0xFFF4F7F5);
+  static const Color primary = SwiftColors.signal;
+  static const Color primaryDark = SwiftColors.rust;
+  static const Color ink = SwiftColors.ink;
+  static const Color scaffold = SwiftColors.paper;
   static const Color card = Colors.white;
-  static const Color muted = Color(0xFF64748B);
-  static const Color border = Color(0xFFD7E0DA);
+  static const Color muted = SwiftColors.muted;
+  static const Color border = Color(0xFFEADBC6);
   static const Color info = Color(0xFF2563EB);
-  static const Color warning = Color(0xFFD97706);
+  // Gold rather than amber: with an orange brand, an orange "warning" would
+  // read as ordinary chrome instead of a state.
+  static const Color warning = Color(0xFFCA8A04);
   static const Color danger = Color(0xFFDC2626);
   static const Color success = Color(0xFF15803D);
 }
@@ -27,11 +33,12 @@ class AppTheme {
           seedColor: AppColors.primary,
           brightness: brightness,
         ).copyWith(
-          primary: dark ? const Color(0xFF5DDB91) : AppColors.primaryDark,
-          onPrimary: dark ? AppColors.ink : Colors.white,
-          surface: dark ? const Color(0xFF15211B) : Colors.white,
-          onSurface: dark ? const Color(0xFFF0F7F2) : AppColors.ink,
-          outline: dark ? const Color(0xFF53655A) : AppColors.border,
+          primary: dark ? SwiftColors.amber : SwiftColors.signal,
+          // Ink on both cuts of the brand orange; white would sit at 2.5:1.
+          onPrimary: SwiftColors.ink,
+          surface: dark ? SwiftColors.graphite : Colors.white,
+          onSurface: dark ? SwiftColors.paper : AppColors.ink,
+          outline: dark ? const Color(0xFF39322B) : AppColors.border,
         );
     final base = ThemeData(
       useMaterial3: true,
@@ -137,7 +144,9 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: scheme.primary,
+          // Brand orange as *text* is 2.31:1 on white and fails AA. Ember is
+          // the deepest cut of the ramp and clears 5:1.
+          foregroundColor: dark ? SwiftColors.amber : SwiftColors.ember,
           minimumSize: const Size(48, 48),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
@@ -206,7 +215,8 @@ class AppTheme {
       listTileTheme: ListTileThemeData(
         minTileHeight: 56,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        iconColor: scheme.primary,
+        // Icons need 3:1 against the surface; brand orange is 2.31:1.
+        iconColor: dark ? SwiftColors.amber : SwiftColors.rust,
       ),
     );
   }

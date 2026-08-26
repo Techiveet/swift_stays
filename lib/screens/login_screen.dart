@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../widgets/swift_logo.dart';
 import 'package:get/get.dart';
 
 import '../core/theme.dart';
@@ -66,10 +68,10 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               child: Column(
                 children: [
-                  Image.asset(
-                    'assets/branding/dejen_logo_horizontal_dark.png',
+                  const SwiftLogo(
+                    variant: SwiftLogoVariant.horizontal,
+                    onDark: true,
                     height: 62,
-                    fit: BoxFit.contain,
                   ),
                   const SizedBox(height: 18),
                   Container(

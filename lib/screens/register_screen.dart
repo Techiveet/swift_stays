@@ -64,7 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (error == null) {
       Get.offAll<void>(() => const HostShellScreen());
       Get.snackbar(
-        'Welcome to Dejen Stays',
+        'Welcome to Swift Stays',
         'Your host profile is pending review. You can prepare your profile now.',
         snackPosition: SnackPosition.BOTTOM,
       );

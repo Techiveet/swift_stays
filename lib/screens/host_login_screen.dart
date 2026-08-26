@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../widgets/swift_logo.dart';
 import 'package:get/get.dart';
 
 import '../core/theme.dart';
@@ -53,8 +55,9 @@ class _HostLoginScreenState extends State<HostLoginScreen> {
             padding: const EdgeInsets.fromLTRB(24, 38, 24, 32),
             child: Column(
               children: [
-                Image.asset(
-                  'assets/branding/dejen_logo_horizontal_dark.png',
+                const SwiftLogo(
+                  variant: SwiftLogoVariant.horizontal,
+                  onDark: true,
                   height: 72,
                 ),
                 const SizedBox(height: 18),
@@ -138,7 +141,7 @@ class _HostLoginScreenState extends State<HostLoginScreen> {
                   ),
                   const SizedBox(height: 14),
                   const Text(
-                    'Use the same Dejen account you use across the platform.',
+                    'Use the same Swift account you use across the platform.',
                     textAlign: TextAlign.center,
                   ),
                 ],

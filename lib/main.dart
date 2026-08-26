@@ -16,11 +16,11 @@ Future<void> main() async {
   Get.put(storage, permanent: true);
   Get.put(api, permanent: true);
   Get.put(HostController(api, storage), permanent: true);
-  runApp(const DejenStaysHostApp());
+  runApp(const SwiftStaysHostApp());
 }
 
-class DejenStaysHostApp extends StatelessWidget {
-  const DejenStaysHostApp({super.key});
+class SwiftStaysHostApp extends StatelessWidget {
+  const SwiftStaysHostApp({super.key});
   @override
   Widget build(BuildContext context) => GetMaterialApp(
     title: Environment.appName,
@@ -60,7 +60,7 @@ class _LaunchScreenState extends State<_LaunchScreen> {
     backgroundColor: AppColors.ink,
     body: Center(
       child: Image.asset(
-        'assets/branding/dejen_logo_horizontal_dark.png',
+        'assets/branding/swift_logo_horizontal_dark.png',
         width: 230,
         fit: BoxFit.contain,
       ),

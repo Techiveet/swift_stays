@@ -152,7 +152,7 @@ class _PropertyDetailScreenState extends State<PropertyDetailScreen> {
       await load();
       Get.snackbar(
         'Submitted for review',
-        'Dejen will notify you when the listing is approved.',
+        'Swift will notify you when the listing is approved.',
       );
     } else {
       Get.snackbar(

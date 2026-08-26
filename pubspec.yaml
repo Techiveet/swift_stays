@@ -1,5 +1,5 @@
-name: dejen_stays_host
-description: "Dejen Stays host and property management app"
+name: swift_stays_host
+description: "Swift Stays host and property management app"
 publish_to: 'none'
 
 # Build number is the strictly-increasing minutes-since-2024-01-01 value CI
@@ -44,7 +44,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
 
-  # Dejen launcher icon + native splash generators (see the two config yamls).
+  # Swift launcher icon + native splash generators (see the two config yamls).
   flutter_launcher_icons: ^0.14.1
   flutter_native_splash: ^2.4.4
 

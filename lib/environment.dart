@@ -1,13 +1,13 @@
-/// App-wide configuration for the Dejen restaurant owner app.
+/// App-wide configuration for the Swift Stays host app.
 class Environment {
-  static const String appName = 'Dejen Stays Host';
+  static const String appName = 'Swift Stays Host';
   static const String version = '1.1.1';
 
   /// Backend base host. Override at build time with:
   ///   flutter run --dart-define=RIDE_API_URL=https://your-host
   static const String domainUrl = String.fromEnvironment(
     'RIDE_API_URL',
-    defaultValue: 'https://dejen.techiveet.com',
+    defaultValue: 'https://swift.techiveet.com',
   );
 
   /// Shared dev token the API expects on every request (parity with the

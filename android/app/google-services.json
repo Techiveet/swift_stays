@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:912555486594:android:13dae50b6696d7fdc6739b",
         "android_client_info": {
-          "package_name": "com.cybercoreet.dejen_stays.host"
+          "package_name": "com.cybercoreet.swift_stays.host"
         }
       },
       "oauth_client": [],
@@ -85,7 +85,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:912555486594:android:a2eb5a683aa1b26bc6739b",
         "android_client_info": {
-          "package_name": "com.techiveet.dejen_market_merchant"
+          "package_name": "com.techiveet.swift_market_merchant"
         }
       },
       "oauth_client": [],

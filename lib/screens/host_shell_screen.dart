@@ -242,7 +242,7 @@ class _Overview extends StatelessWidget {
             icon: Icons.add_home_work_outlined,
             text: profileStatus == 'approved'
                 ? 'Add your first property to begin hosting.'
-                : 'Create your first draft while Dejen reviews your account.',
+                : 'Create your first draft while Swift reviews your account.',
             action: () => Get.to<void>(() => const PropertyFormScreen()),
             actionLabel: 'Add property',
           )
@@ -393,7 +393,7 @@ class _Account extends StatelessWidget {
         child: ListTile(
           leading: const CircleAvatar(child: Icon(Icons.person)),
           title: Text(
-            '${controller.user['display_name'] ?? 'Dejen Stays Host'}',
+            '${controller.user['display_name'] ?? 'Swift Stays Host'}',
           ),
           subtitle: Text(
             'Verification: ${controller.profile['status'] ?? 'not started'}',
@@ -841,7 +841,7 @@ class _ApprovalBanner extends StatelessWidget {
           Text(
             rejected
                 ? '${controller.profile['rejection_reason'] ?? 'Update your host information and contact support.'}'
-                : 'Complete your bio and payout setup now. You can add properties as soon as the Dejen team approves your account.',
+                : 'Complete your bio and payout setup now. You can add properties as soon as the Swift team approves your account.',
           ),
           const SizedBox(height: 12),
           OutlinedButton.icon(

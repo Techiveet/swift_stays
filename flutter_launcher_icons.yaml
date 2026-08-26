@@ -1,14 +1,17 @@
-# Dejen app icons. Run:  dart run flutter_launcher_icons -f flutter_launcher_icons.yaml
+# Swift app icons. Run:  dart run flutter_launcher_icons -f flutter_launcher_icons.yaml
 # (or paste this block under your pubspec.yaml and run: dart run flutter_launcher_icons)
 flutter_launcher_icons:
-  image_path: "assets/branding/icon/dejen_appicon.png"
+  image_path: "assets/branding/icon/swift_appicon.png"
+  # iOS masks its own corners and forbids alpha, so it gets the
+  # full-bleed square cut rather than the pre-rounded one.
+  image_path_ios: "assets/branding/icon/swift_appicon_square.png"
   android: true
   ios: true
   remove_alpha_ios: true
   min_sdk_android: 21
 
-  adaptive_icon_background: "assets/branding/icon/dejen_appicon_background.png"
-  adaptive_icon_foreground: "assets/branding/icon/dejen_appicon_foreground.png"
+  adaptive_icon_background: "assets/branding/icon/swift_appicon_background.png"
+  adaptive_icon_foreground: "assets/branding/icon/swift_appicon_foreground.png"
 
   # NOTE: this app only has android/ios platform folders, so web/windows/macos
   # icon generation (present in the original kit) is intentionally omitted.
