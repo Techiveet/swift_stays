@@ -1,4 +1,4 @@
-package com.cybercoreet.swift_stays.host
+package com.techiveet.swift.stays
 
 import io.flutter.embedding.android.FlutterActivity
 

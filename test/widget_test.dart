@@ -1,8 +1,8 @@
-import 'package:swift_stays_host/core/storage.dart';
-import 'package:swift_stays_host/core/theme.dart';
-import 'package:swift_stays_host/data/api_service.dart';
-import 'package:swift_stays_host/data/controllers/host_controller.dart';
-import 'package:swift_stays_host/screens/host_login_screen.dart';
+import 'package:swift_stays/core/storage.dart';
+import 'package:swift_stays/core/theme.dart';
+import 'package:swift_stays/data/api_service.dart';
+import 'package:swift_stays/data/controllers/host_controller.dart';
+import 'package:swift_stays/screens/host_login_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';

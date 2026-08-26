@@ -19,7 +19,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.cybercoreet.swift_stays.host"
+    namespace = "com.techiveet.swift.stays"
     compileSdk = 36
     ndkVersion = "28.2.13676358"
 
@@ -31,7 +31,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.cybercoreet.swift_stays.host"
+        applicationId = "com.techiveet.swift.stays"
         minSdk = flutter.minSdkVersion
         targetSdk = 36
         versionCode = flutter.versionCode

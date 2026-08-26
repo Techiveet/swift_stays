@@ -1,4 +1,4 @@
-name: swift_stays_host
+name: swift_stays
 description: "Swift Stays host and property management app"
 publish_to: 'none'
 
