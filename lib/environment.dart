@@ -1,6 +1,6 @@
 /// App-wide configuration for the Swift Stays host app.
 class Environment {
-  static const String appName = 'Swift Stays Host';
+  static const String appName = 'Swift Stays';
   static const String version = '1.1.1';
 
   /// Backend base host. Override at build time with:
