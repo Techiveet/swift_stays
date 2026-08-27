@@ -13,9 +13,9 @@ flutter_native_splash:
   # app-icon composition rather than the wide lockup.
   android_12:
     color: "#F1952C"
-    image: assets/branding/icon/swift_appicon_foreground.png
+    image: assets/branding/splash/swift_android12_splash.png
     color_dark: "#131314"
-    image_dark: assets/branding/icon/swift_appicon_foreground.png
+    image_dark: assets/branding/splash/swift_android12_splash.png
 
   android: true
   ios: true
