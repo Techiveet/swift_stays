@@ -4,7 +4,7 @@ publish_to: 'none'
 
 # Build number is the strictly-increasing minutes-since-2024-01-01 value CI
 # computes; kept high here as the local-build fallback (see play-store.yml).
-version: 1.1.1+1343150
+version: 1.1.2+1343150
 
 environment:
   sdk: ^3.12.0
