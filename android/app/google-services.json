@@ -12,7 +12,20 @@
           "package_name": "com.techiveet.swift.driver"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "793080769814-crkr98h903jc0ijj4tsl84dk2b483l4d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techiveet.swift.driver",
+            "certificate_hash": "42d44b9cc81c134e7c319463a88c3316295a0c47"
+          }
+        },
+        {
+          "client_id": "793080769814-bhpdsjt0dffegkflvreglujc7k5om14v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD4Gq_Kx6kwAy-omRLPbazCk1Uwo1iUwfg"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793080769814-bhpdsjt0dffegkflvreglujc7k5om14v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -31,7 +49,20 @@
           "package_name": "com.techiveet.swift.market"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "793080769814-r11lcq80ela81ihks8j4fsnlso75gtps.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techiveet.swift.market",
+            "certificate_hash": "f10f54888ee37692128f58cc06f4ebf6b2731736"
+          }
+        },
+        {
+          "client_id": "793080769814-bhpdsjt0dffegkflvreglujc7k5om14v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD4Gq_Kx6kwAy-omRLPbazCk1Uwo1iUwfg"
@@ -39,7 +70,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793080769814-bhpdsjt0dffegkflvreglujc7k5om14v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -50,7 +86,20 @@
           "package_name": "com.techiveet.swift.restaurant"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "793080769814-fnle1q4d1hn9c9l57jrch840rknj0kud.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techiveet.swift.restaurant",
+            "certificate_hash": "b121bffb37f611977479948ad8bd411874cd309c"
+          }
+        },
+        {
+          "client_id": "793080769814-bhpdsjt0dffegkflvreglujc7k5om14v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD4Gq_Kx6kwAy-omRLPbazCk1Uwo1iUwfg"
@@ -58,7 +107,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793080769814-bhpdsjt0dffegkflvreglujc7k5om14v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -69,7 +123,20 @@
           "package_name": "com.techiveet.swift.rider"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "793080769814-4odrhkovdn4osqru4ka85uukf2gigft0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techiveet.swift.rider",
+            "certificate_hash": "f2dac35ab08e79f32e6da06e263c55dede031f13"
+          }
+        },
+        {
+          "client_id": "793080769814-bhpdsjt0dffegkflvreglujc7k5om14v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD4Gq_Kx6kwAy-omRLPbazCk1Uwo1iUwfg"
@@ -77,7 +144,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793080769814-bhpdsjt0dffegkflvreglujc7k5om14v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     },
@@ -88,7 +160,20 @@
           "package_name": "com.techiveet.swift.stays"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "793080769814-j69fhvc7qo77f3i209use120ua7sau0q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.techiveet.swift.stays",
+            "certificate_hash": "b121bffb37f611977479948ad8bd411874cd309c"
+          }
+        },
+        {
+          "client_id": "793080769814-bhpdsjt0dffegkflvreglujc7k5om14v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD4Gq_Kx6kwAy-omRLPbazCk1Uwo1iUwfg"
@@ -96,7 +181,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "793080769814-bhpdsjt0dffegkflvreglujc7k5om14v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
