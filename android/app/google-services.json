@@ -1,13 +1,89 @@
 {
   "project_info": {
-    "project_number": "912555486594",
-    "project_id": "dejen-7d966",
-    "storage_bucket": "dejen-7d966.firebasestorage.app"
+    "project_number": "793080769814",
+    "project_id": "swift-8cd5a",
+    "storage_bucket": "swift-8cd5a.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:912555486594:android:13dae50b6696d7fdc6739b",
+        "mobilesdk_app_id": "1:793080769814:android:d5736238104232f5fd7437",
+        "android_client_info": {
+          "package_name": "com.techiveet.swift.driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4Gq_Kx6kwAy-omRLPbazCk1Uwo1iUwfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793080769814:android:39900d5b7433cca7fd7437",
+        "android_client_info": {
+          "package_name": "com.techiveet.swift.market"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4Gq_Kx6kwAy-omRLPbazCk1Uwo1iUwfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793080769814:android:c3ae86bb5f7efa86fd7437",
+        "android_client_info": {
+          "package_name": "com.techiveet.swift.restaurant"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4Gq_Kx6kwAy-omRLPbazCk1Uwo1iUwfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793080769814:android:8cc1893584ba7ae8fd7437",
+        "android_client_info": {
+          "package_name": "com.techiveet.swift.rider"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4Gq_Kx6kwAy-omRLPbazCk1Uwo1iUwfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:793080769814:android:a42593e54bedaad5fd7437",
         "android_client_info": {
           "package_name": "com.techiveet.swift.stays"
         }
@@ -15,83 +91,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAdkqSFJ5W4Mo1BAndnYoqm02WFljrzeXY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:912555486594:android:3d2e3313909236c9c6739b",
-        "android_client_info": {
-          "package_name": "com.techive.Hivedriver"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAdkqSFJ5W4Mo1BAndnYoqm02WFljrzeXY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:912555486594:android:f08240601762cea4c6739b",
-        "android_client_info": {
-          "package_name": "com.techive.Hiveuser"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAdkqSFJ5W4Mo1BAndnYoqm02WFljrzeXY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:912555486594:android:11e53c97f1bc482cc6739b",
-        "android_client_info": {
-          "package_name": "com.techive.hive_restaurant"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAdkqSFJ5W4Mo1BAndnYoqm02WFljrzeXY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:912555486594:android:a2eb5a683aa1b26bc6739b",
-        "android_client_info": {
-          "package_name": "com.techiveet.swift_market_merchant"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAdkqSFJ5W4Mo1BAndnYoqm02WFljrzeXY"
+          "current_key": "AIzaSyD4Gq_Kx6kwAy-omRLPbazCk1Uwo1iUwfg"
         }
       ],
       "services": {
