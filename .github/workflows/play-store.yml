@@ -107,11 +107,20 @@ jobs:
           "$SDKMGR" "ndk;28.2.13676358" "platforms;android-36" "build-tools;36.0.0"
 
       - name: Compute version code
-        # Minutes since a fixed epoch (2024-01-01 UTC) — strictly increases on every
-        # build forever (CI or local), so Play can never reject it as "already used"
-        # and there's no manual counter/offset to maintain or run out of.
+        # Seconds since a fixed epoch (2024-01-01 UTC). Strictly increases on
+        # every build, so Play can never reject it as already used, and there is
+        # no counter to maintain.
+        #
+        # This was minutes, which collided: two builds inside the same minute --
+        # a manual upload of one run's artifact followed by a re-run, say --
+        # produced the same code and Play refused the second. Seconds makes that
+        # need two builds starting in the same second, and still leaves ~64
+        # years before the 2,100,000,000 ceiling.
         id: vc
-        run: echo "code=$(( ($(date -u +%s) - 1704067200) / 60 ))" >> "$GITHUB_OUTPUT"
+        run: |
+          code=$(( $(date -u +%s) - 1704067200 ))
+          echo "version code: $code"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
 
       - name: Build App Bundle
         run: flutter build appbundle --release --build-number=${{ steps.vc.outputs.code }} --dart-define=RIDE_API_URL=${{ vars.RIDE_API_URL || 'https://swift.techiveet.com' }}
